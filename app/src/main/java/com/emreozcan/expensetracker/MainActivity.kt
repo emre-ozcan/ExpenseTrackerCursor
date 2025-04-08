@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.emreozcan.expensetracker.ui.navigation.BottomNavItem
 import com.emreozcan.expensetracker.ui.navigation.BottomNavigation
+import com.emreozcan.expensetracker.ui.screens.AddExpenseScreen
 import com.emreozcan.expensetracker.ui.screens.HomeScreen
 import com.emreozcan.expensetracker.ui.theme.ExpenseTrackerTheme
 import com.emreozcan.expensetracker.viewmodel.ExpenseViewModel
@@ -66,7 +67,7 @@ fun ExpenseTrackerApp() {
             composable(BottomNavItem.Home.route) {
                 HomeScreen(
                     onAddExpense = {
-                        // TODO: Navigate to add expense screen
+                        navController.navigate("add_expense")
                     }
                 )
             }
@@ -87,6 +88,13 @@ fun ExpenseTrackerApp() {
                 ) {
                     // Placeholder for Reports Screen
                 }
+            }
+            composable("add_expense") {
+                AddExpenseScreen(
+                    onNavigateBack = {
+                        navController.navigateUp()
+                    }
+                )
             }
         }
     }

@@ -52,7 +52,7 @@ class ExpenseViewModel @Inject constructor(
     private fun shouldLoadSampleData(): Boolean {
         // İlk kez çalışıyorsa örnek veri yükle
         // Gerçek uygulamada bir SharedPreferences kontrolü kullanabilirsiniz
-        return true
+        return false
     }
 
     private fun loadExpensesFromDatabase() {
@@ -90,12 +90,25 @@ class ExpenseViewModel @Inject constructor(
     private fun observeWeeklyTotal() {
         viewModelScope.launch {
             val now = LocalDateTime.now()
-            val weekStart = now.minusDays(now.dayOfWeek.value.toLong() - 1).truncatedTo(ChronoUnit.DAYS)
-            val weekEnd = weekStart.plusDays(7)
             
-            expenseRepository.getTotalAmountInTimeRange(weekStart, weekEnd, ExpenseCategory.SALARY)
-                .collectLatest { total ->
-                    _totalSpentThisWeek.value = total
+            // Hafta şu anki günden bir hafta önceki güne kadar (bugün dahil)
+            val weekEnd = now.truncatedTo(ChronoUnit.DAYS).plusDays(1) // Bugünün sonuna kadar
+            val weekStart = weekEnd.minusDays(7) // Bir hafta öncesi
+            
+            // Debug amaçlı tarih aralığını kontrol et
+            println("Hafta başlangıcı: $weekStart")
+            println("Hafta bitişi: $weekEnd")
+            
+            expenseRepository.getExpensesInTimeRange(weekStart, weekEnd)
+                .collectLatest { expenseList ->
+                    val weeklyTotal = expenseList
+                        .filter { it.category != ExpenseCategory.SALARY }
+                        .sumOf { it.amount }
+                    
+                    println("Haftalık toplam harcama: $weeklyTotal")
+                    println("Harcama listesi: ${expenseList.map { "${it.description}: ${it.amount}" }}")
+                    
+                    _totalSpentThisWeek.value = weeklyTotal
                 }
         }
     }

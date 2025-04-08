@@ -9,9 +9,20 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.LocalCafe
+import androidx.compose.material.icons.filled.LocalHospital
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Smartphone
+import androidx.compose.material.icons.filled.LocalHotel
+import androidx.compose.material.icons.filled.Celebration
+import androidx.compose.material.icons.filled.LocalDrink
+import androidx.compose.material.icons.filled.More
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,11 +40,16 @@ fun CategoryIcon(category: ExpenseCategory, modifier: Modifier = Modifier) {
         ExpenseCategory.TRANSPORTATION -> Icons.Default.DirectionsCar to Color(0xFF2196F3)
         ExpenseCategory.ENTERTAINMENT -> Icons.Default.Movie to Color(0xFF9C27B0)
         ExpenseCategory.SHOPPING -> Icons.Default.ShoppingCart to Color(0xFF4CAF50)
+        ExpenseCategory.UTILITIES -> Icons.Default.WaterDrop to Color(0xFF03A9F4)
+        ExpenseCategory.RENT -> Icons.Default.Home to Color(0xFFFF5722)
+        ExpenseCategory.HEALTH -> Icons.Default.LocalHospital to Color(0xFFE91E63)
+        ExpenseCategory.EDUCATION -> Icons.Default.School to Color(0xFF673AB7)
+        ExpenseCategory.TRAVEL -> Icons.Default.FlightTakeoff to Color(0xFF009688)
         ExpenseCategory.COFFEE -> Icons.Default.LocalCafe to Color(0xFF795548)
         ExpenseCategory.PETS -> Icons.Default.Pets to Color(0xFFFF9800)
-        ExpenseCategory.SNACKS -> Icons.Default.Fastfood to Color(0xFFE91E63)
+        ExpenseCategory.SNACKS -> Icons.Default.Cake to Color(0xFFE91E63)
         ExpenseCategory.SALARY -> Icons.Default.AttachMoney to Color(0xFF4CAF50)
-        else -> Icons.Default.ShoppingCart to Color(0xFF607D8B)
+        ExpenseCategory.OTHER -> Icons.Default.More to Color(0xFF607D8B)
     }
     
     Box(
