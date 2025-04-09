@@ -9,9 +9,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -32,6 +34,7 @@ sealed class BottomNavItem(val route: String, val title: String, val selectedIco
     object Home : BottomNavItem("home", "Home", Icons.Filled.Home, Icons.Outlined.Home)
     object Stats : BottomNavItem("stats", "Stats", Icons.Filled.Analytics, Icons.Outlined.Analytics)
     object Reports : BottomNavItem("reports", "Reports", Icons.Filled.Assessment, Icons.Outlined.Assessment)
+    object Settings : BottomNavItem("settings", "Settings", Icons.Filled.Settings, Icons.Outlined.Settings)
 }
 
 @Composable
@@ -40,7 +43,7 @@ fun BottomNavigation(
     items: List<BottomNavItem> = listOf(
         BottomNavItem.Home,
         BottomNavItem.Stats,
-        BottomNavItem.Reports
+        BottomNavItem.Settings
     ),
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()

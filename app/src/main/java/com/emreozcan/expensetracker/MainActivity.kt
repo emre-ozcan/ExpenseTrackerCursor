@@ -25,6 +25,7 @@ import com.emreozcan.expensetracker.ui.navigation.BottomNavigation
 import com.emreozcan.expensetracker.ui.screens.AddExpenseScreen
 import com.emreozcan.expensetracker.ui.screens.ExpensesScreen
 import com.emreozcan.expensetracker.ui.screens.HomeScreen
+import com.emreozcan.expensetracker.ui.screens.SettingsScreen
 import com.emreozcan.expensetracker.ui.theme.ExpenseTrackerTheme
 import com.emreozcan.expensetracker.viewmodel.ExpenseViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -90,6 +91,9 @@ fun ExpenseTrackerApp() {
                 ) {
                     // Placeholder for Reports Screen
                 }
+            }
+            composable(BottomNavItem.Settings.route) {
+                SettingsScreen()
             }
             composable("add_expense") {
                 AddExpenseScreen(
