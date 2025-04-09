@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.emreozcan.expensetracker.data.repository.ExpenseRepository
 import com.emreozcan.expensetracker.model.Expense
 import com.emreozcan.expensetracker.model.ExpenseCategory
+import com.emreozcan.expensetracker.ui.components.DailyExpense
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +40,12 @@ class ExpenseViewModel @Inject constructor(
 
     private val _yesterdayExpenses = MutableStateFlow<List<Expense>>(emptyList())
     val yesterdayExpenses: StateFlow<List<Expense>> = _yesterdayExpenses
+    
+    private val _weeklyExpenses = MutableStateFlow<List<DailyExpense>>(emptyList())
+    val weeklyExpenses: StateFlow<List<DailyExpense>> = _weeklyExpenses
+    
+    private val _weeklyExpensesByCategory = MutableStateFlow<Map<ExpenseCategory, Double>>(emptyMap())
+    val weeklyExpensesByCategory: StateFlow<Map<ExpenseCategory, Double>> = _weeklyExpensesByCategory
 
     init {
         loadExpensesFromDatabase()
@@ -47,6 +56,8 @@ class ExpenseViewModel @Inject constructor(
         observeTodayExpenses()
         observeYesterdayExpenses()
         observeWeeklyTotal()
+        observeWeeklyExpensesByDay()
+        observeWeeklyExpensesByCategory()
     }
 
     private fun shouldLoadSampleData(): Boolean {
@@ -109,6 +120,67 @@ class ExpenseViewModel @Inject constructor(
                     println("Harcama listesi: ${expenseList.map { "${it.description}: ${it.amount}" }}")
                     
                     _totalSpentThisWeek.value = weeklyTotal
+                }
+        }
+    }
+    
+    private fun observeWeeklyExpensesByDay() {
+        viewModelScope.launch {
+            val now = LocalDateTime.now()
+            
+            // Hafta şu anki günden bir hafta önceki güne kadar (bugün dahil)
+            val weekEnd = now.truncatedTo(ChronoUnit.DAYS).plusDays(1) // Bugünün sonuna kadar
+            val weekStart = weekEnd.minusDays(7) // Bir hafta öncesi
+            
+            expenseRepository.getExpensesInTimeRange(weekStart, weekEnd)
+                .collectLatest { expenseList ->
+                    // Günlük harcamaları gruplandır
+                    val dailyExpenses = mutableListOf<DailyExpense>()
+                    
+                    // Haftanın her günü için
+                    for (dayOffset in 6 downTo 0) {
+                        val day = now.minusDays(dayOffset.toLong()).truncatedTo(ChronoUnit.DAYS)
+                        val nextDay = day.plusDays(1)
+                        
+                        // Bu gün için harcamalar
+                        val thisDayExpenses = expenseList
+                            .filter { 
+                                it.timestamp.isAfter(day) && 
+                                it.timestamp.isBefore(nextDay) && 
+                                it.category != ExpenseCategory.SALARY
+                            }
+                        
+                        // Günün adını al (Mon, Tue vs.)
+                        val dayName = day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+                        
+                        // Günlük toplam harcama
+                        val totalForDay = thisDayExpenses.sumOf { it.amount }
+                        
+                        dailyExpenses.add(DailyExpense(dayName, totalForDay))
+                    }
+                    
+                    _weeklyExpenses.value = dailyExpenses
+                }
+        }
+    }
+    
+    private fun observeWeeklyExpensesByCategory() {
+        viewModelScope.launch {
+            val now = LocalDateTime.now()
+            
+            // Hafta şu anki günden bir hafta önceki güne kadar (bugün dahil)
+            val weekEnd = now.truncatedTo(ChronoUnit.DAYS).plusDays(1) // Bugünün sonuna kadar
+            val weekStart = weekEnd.minusDays(7) // Bir hafta öncesi
+            
+            expenseRepository.getExpensesInTimeRange(weekStart, weekEnd)
+                .collectLatest { expenseList ->
+                    // Kategori bazında harcamaları gruplandır
+                    val expensesByCategory = expenseList
+                        .filter { it.category != ExpenseCategory.SALARY }
+                        .groupBy { it.category }
+                        .mapValues { (_, expenses) -> expenses.sumOf { it.amount } }
+                    
+                    _weeklyExpensesByCategory.value = expensesByCategory
                 }
         }
     }
@@ -214,5 +286,12 @@ class ExpenseViewModel @Inject constructor(
         return _yesterdayExpenses.value
             .filter { it.category != ExpenseCategory.SALARY }
             .sumOf { it.amount }
+    }
+    
+    fun getWeeklyExpensePercent(): Int {
+        // Bu hafta ve önceki hafta arasındaki farkı yüzde olarak hesapla
+        // Gerçek uygulamada önceki haftanın verileri olmalı
+        // Şimdilik sabit bir değer döndürelim
+        return -11 // % 11 azalma
     }
 } 

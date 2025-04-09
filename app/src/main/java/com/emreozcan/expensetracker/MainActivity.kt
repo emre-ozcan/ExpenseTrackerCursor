@@ -12,16 +12,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.emreozcan.expensetracker.ui.navigation.BottomNavItem
 import com.emreozcan.expensetracker.ui.navigation.BottomNavigation
 import com.emreozcan.expensetracker.ui.screens.AddExpenseScreen
+import com.emreozcan.expensetracker.ui.screens.ExpensesScreen
 import com.emreozcan.expensetracker.ui.screens.HomeScreen
 import com.emreozcan.expensetracker.ui.theme.ExpenseTrackerTheme
 import com.emreozcan.expensetracker.viewmodel.ExpenseViewModel
@@ -72,13 +74,13 @@ fun ExpenseTrackerApp() {
                 )
             }
             composable(BottomNavItem.Stats.route) {
-                // TODO: Stats Screen
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.White
-                ) {
-                    // Placeholder for Stats Screen
-                }
+                val viewModel: ExpenseViewModel = hiltViewModel()
+                ExpensesScreen(
+                    weeklyExpenses = viewModel.weeklyExpenses.collectAsState().value,
+                    totalSpent = viewModel.totalSpentThisWeek.value,
+                    percentageChange = viewModel.getWeeklyExpensePercent(),
+                    expensesByCategory = viewModel.weeklyExpensesByCategory.collectAsState().value
+                )
             }
             composable(BottomNavItem.Reports.route) {
                 // TODO: Reports Screen
