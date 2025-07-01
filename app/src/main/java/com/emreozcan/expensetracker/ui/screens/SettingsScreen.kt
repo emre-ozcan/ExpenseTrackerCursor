@@ -63,16 +63,16 @@ import kotlinx.coroutines.delay
 @Composable
 fun SettingsScreen() {
     val scrollState = rememberScrollState()
-    val appVersion = BuildConfig.VERSION_NAME // build.gradle'den versionName'i dinamik alıyoruz
-    val userName = "Emre Özcan" // Burada kullanıcı adını sabit girdim, gerçek uygulamada veri tabanından alınabilir
+    val appVersion = BuildConfig.VERSION_NAME // Get versionName dynamically from build.gradle
+    val userName = "Emre Özcan" // User name is hardcoded here, in a real app it can be retrieved from database
     
-    // Animasyon için state'ler
+    // States for animations
     val headerVisible = remember { MutableTransitionState(false) }
     val userCardVisible = remember { MutableTransitionState(false) }
     val helpSectionVisible = remember { MutableTransitionState(false) }
     val versionVisible = remember { MutableTransitionState(false) }
     
-    // Animasyonları başlat
+    // Start animations
     LaunchedEffect(key1 = true) {
         headerVisible.targetState = true
         delay(150)
@@ -90,7 +90,7 @@ fun SettingsScreen() {
             .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
-        // Header - Fade in animasyonu
+        // Header - Fade in animation
         AnimatedVisibility(
             visibleState = headerVisible,
             enter = fadeIn(animationSpec = tween(500)) + 
@@ -100,7 +100,7 @@ fun SettingsScreen() {
                    )
         ) {
             Text(
-                text = "Ayarlar",
+                text = "Settings",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1B1D36)
@@ -109,7 +109,7 @@ fun SettingsScreen() {
             )
         }
         
-        // User Card - Scale In + Fade In animasyonu
+        // User Card - Scale In + Fade In animation
         AnimatedVisibility(
             visibleState = userCardVisible,
             enter = fadeIn(animationSpec = tween(500)) + 
@@ -126,7 +126,7 @@ fun SettingsScreen() {
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Help Section - Slide In animasyonu
+        // Help Section - Slide In animation
         AnimatedVisibility(
             visibleState = helpSectionVisible,
             enter = fadeIn(animationSpec = tween(500)) + 
@@ -140,7 +140,7 @@ fun SettingsScreen() {
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // App Version - Slide In + Fade In animasyonu
+        // App Version - Slide In + Fade In animation
         AnimatedVisibility(
             visibleState = versionVisible,
             enter = fadeIn(animationSpec = tween(500)) + 
@@ -151,7 +151,7 @@ fun SettingsScreen() {
         ) {
             SettingsItem(
                 icon = Icons.Default.Info,
-                title = "Uygulama Versiyonu",
+                title = "App Version",
                 value = appVersion,
                 showArrow = false
             )
@@ -209,7 +209,7 @@ fun UserInfoCard(userName: String) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Kişisel Profil",
+                    text = "Personal Profile",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = Color.Gray
                     )
@@ -276,7 +276,7 @@ fun HelpSection() {
                     }
                     
                     Text(
-                        text = "Nasıl Kullanılır?",
+                        text = "How to Use?",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold
                         ),
@@ -286,7 +286,7 @@ fun HelpSection() {
                 
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (expanded) "Kapat" else "Aç",
+                    contentDescription = if (expanded) "Close" else "Open",
                     modifier = Modifier.rotate(rotationState),
                     tint = Color.Gray
                 )
@@ -308,7 +308,7 @@ fun HelpSection() {
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     Text(
-                        text = "Expense Tracker Uygulaması Kullanım Kılavuzu:",
+                        text = "Expense Tracker App User Guide:",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = Color(0xFF1B1D36)
@@ -317,7 +317,7 @@ fun HelpSection() {
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "1. Ana Ekran: Günlük harcamalarınızı takip edin ve yeni harcama ekleyin.",
+                        text = "1. Home Screen: Track your daily expenses and add new expenses.",
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = Color.DarkGray
@@ -326,7 +326,7 @@ fun HelpSection() {
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "2. İstatistikler: Harcamalarınızın kategorilere göre dağılımını ve haftalık harcama grafiğini görüntüleyin.",
+                        text = "2. Statistics: View the distribution of your expenses by categories and weekly expense charts.",
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = Color.DarkGray
@@ -335,7 +335,7 @@ fun HelpSection() {
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "3. Raporlar: Aylık ve yıllık harcama raporlarınızı inceleyin.",
+                        text = "3. Reports: Review your monthly and annual expense reports.",
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = Color.DarkGray
@@ -344,7 +344,7 @@ fun HelpSection() {
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "4. Ayarlar: Uygulama ayarlarını yönetin ve kişisel bilgilerinizi güncelleyin.",
+                        text = "4. Settings: Manage app settings and update your personal information.",
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         color = Color.DarkGray
